@@ -254,28 +254,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // --- REALTIME POLLING SYSTEM (30 SECONDS REFRESH) ---
-  let realtimeTimer = null;
+  // --- REALTIME POLLING SYSTEM (ADMIN: 5 MINS, USER LEADERBOARD: 30 SECS) ---
+  let adminTimer = null;
+  let userLeaderboardTimer = null;
 
   function startRealtimePolling() {
     stopRealtimePolling();
-    realtimeTimer = setInterval(() => {
-      if (currentUser && currentUser.isAdmin) {
+
+    if (currentUser && currentUser.isAdmin) {
+      // Admin page updates every 5 minutes (300,000 ms)
+      adminTimer = setInterval(() => {
         const activeTab = document.querySelector('.admin-tab.active');
         const targetId = activeTab ? activeTab.getAttribute('data-tab') : '';
         if (targetId === 'tabResults') loadAdminResults();
         if (targetId === 'tabUnvoted') loadUnvotedUsers();
         if (targetId === 'tabUsers') loadAdminUserList();
-      } else if (currentUser && currentUser.hasVoted) {
+      }, 300000);
+    } else if (currentUser && currentUser.hasVoted) {
+      // User / Server side leaderboard updates every 30 seconds (30,000 ms)
+      userLeaderboardTimer = setInterval(() => {
         loadUserLeaderboard();
-      }
-    }, 30000);
+      }, 30000);
+    }
   }
 
   function stopRealtimePolling() {
-    if (realtimeTimer) {
-      clearInterval(realtimeTimer);
-      realtimeTimer = null;
+    if (adminTimer) {
+      clearInterval(adminTimer);
+      adminTimer = null;
+    }
+    if (userLeaderboardTimer) {
+      clearInterval(userLeaderboardTimer);
+      userLeaderboardTimer = null;
     }
   }
 
