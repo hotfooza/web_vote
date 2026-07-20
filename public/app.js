@@ -2,6 +2,10 @@
    VOTING SYSTEM - FIREBASE & LOCAL HYBRID FRONTEND LOGIC
    ========================================================= */
 
+const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? ''
+  : 'https://web-vote.onrender.com';
+
 // User's Firebase Configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDFaXHzCg9k9jBUon0Mb-Isev_QB-TihsY",
@@ -277,29 +281,27 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-      try {
-        const res = await fetch('/api/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code })
-        });
-        if (res.ok) {
-          const data = await res.json();
-          if (data.success) {
-            currentUser = data.user;
-            inputCode.value = '';
-            showToast(`ยินดีต้อนรับ ${currentUser.name}`, 'success');
-            navigateUserScreen();
-            return;
-          } else {
-            showToast(data.message, 'error');
-            return;
-          }
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success) {
+          currentUser = data.user;
+          inputCode.value = '';
+          showToast(`ยินดีต้อนรับ ${currentUser.name}`, 'success');
+          navigateUserScreen();
+          return;
+        } else {
+          showToast(data.message, 'error');
+          return;
         }
-      } catch (err) {
-        console.warn("Express API failed, using static client database:", err);
       }
+    } catch (err) {
+      console.warn("Express API failed, using static client database:", err);
     }
 
     // Standalone Static Host
@@ -564,7 +566,7 @@ document.addEventListener('DOMContentLoaded', () => {
     adminResultsContainer.innerHTML = '<p class="text-muted">กำลังโหลดข้อมูลคะแนน...</p>';
 
     try {
-      const res = await fetch('/api/admin/results', {
+      const res = await fetch(`${API_BASE_URL}/api/admin/results`, {
         headers: { 'x-admin-code': currentUser.code }
       });
       const data = await res.json();
@@ -615,7 +617,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function loadUnvotedUsers() {
     try {
-      const res = await fetch('/api/admin/unvoted', {
+      const res = await fetch(`${API_BASE_URL}/api/admin/unvoted`, {
         headers: { 'x-admin-code': currentUser.code }
       });
       const data = await res.json();
@@ -649,7 +651,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function loadAdminUserList() {
     try {
-      const res = await fetch('/api/admin/users', {
+      const res = await fetch(`${API_BASE_URL}/api/admin/users`, {
         headers: { 'x-admin-code': currentUser.code }
       });
       const data = await res.json();
@@ -714,7 +716,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      const res = await fetch('/api/admin/users', {
+      const res = await fetch(`${API_BASE_URL}/api/admin/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -744,7 +746,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!confirm(`ยืนยันการลบผู้ใช้รหัส ${code}?`)) return;
 
     try {
-      const res = await fetch(`/api/admin/users/${code}`, {
+      const res = await fetch(`${API_BASE_URL}/api/admin/users/${code}`, {
         method: 'DELETE',
         headers: { 'x-admin-code': currentUser.code }
       });
@@ -782,7 +784,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      const res = await fetch(`/api/admin/users/${originalCode}`, {
+      const res = await fetch(`${API_BASE_URL}/api/admin/users/${originalCode}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -811,7 +813,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!confirm(`ยืนยันการคืนสิทธิ์การโหวตให้คุณ ${name} (รหัส ${code})?`)) return;
 
     try {
-      const res = await fetch(`/api/admin/users/${code}/reset-vote`, {
+      const res = await fetch(`${API_BASE_URL}/api/admin/users/${code}/reset-vote`, {
         method: 'POST',
         headers: { 'x-admin-code': currentUser.code }
       });
@@ -833,7 +835,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function loadAdminCandidatesDropdown() {
     try {
-      const res = await fetch('/api/candidates');
+      const res = await fetch(`${API_BASE_URL}/api/candidates`);
       const data = await res.json();
 
       if (!data.success) return;
@@ -901,7 +903,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      const res = await fetch('/api/admin/candidates', {
+      const res = await fetch(`${API_BASE_URL}/api/admin/candidates`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -932,7 +934,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!confirm('ยืนยันการลบผู้ลงสมัครท่านนี้?')) return;
 
     try {
-      const res = await fetch(`/api/admin/candidates/${categoryId}/${candId}`, {
+      const res = await fetch(`${API_BASE_URL}/api/admin/candidates/${categoryId}/${candId}`, {
         method: 'DELETE',
         headers: { 'x-admin-code': currentUser.code }
       });
@@ -959,7 +961,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      const res = await fetch('/api/admin/reset', {
+      const res = await fetch(`${API_BASE_URL}/api/admin/reset`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
