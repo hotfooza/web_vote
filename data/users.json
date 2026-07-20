@@ -99,7 +99,8 @@
     "code": "10773",
     "name": "พล.ต.พิทยากูล โพธิสุวรรณ",
     "isAdmin": false,
-    "hasVoted": false
+    "hasVoted": true,
+    "votedAt": "2026-07-20T17:29:08.686Z"
   },
   {
     "code": "10775",

@@ -202,6 +202,10 @@ document.addEventListener('DOMContentLoaded', () => {
           targetContent.classList.remove('hidden');
           targetContent.classList.add('active');
         }
+
+        if (targetId === 'tabUnvoted') loadUnvotedUsers();
+        if (targetId === 'tabResults') loadAdminResults();
+        if (targetId === 'tabUsers') loadAdminUserList();
       });
     });
 
