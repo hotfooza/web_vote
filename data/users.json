@@ -1,0 +1,188 @@
+[
+  {
+    "code": "99995",
+    "name": "ผู้ดูแลระบบ (Admin)",
+    "isAdmin": true,
+    "hasVoted": false
+  },
+  {
+    "code": "10627",
+    "name": "พล.ต.ต.กฤตัชญ์ บำรุงรัตนยศ",
+    "isAdmin": false,
+    "hasVoted": false
+  },
+  {
+    "code": "10628",
+    "name": "นาย กฤศ จันทร์สุวรรณ",
+    "isAdmin": false,
+    "hasVoted": false
+  },
+  {
+    "code": "10644",
+    "name": "พล.ร.ต.เขมชาต พิทักษ์ธรรม",
+    "isAdmin": false,
+    "hasVoted": false
+  },
+  {
+    "code": "10667",
+    "name": "น.อ.ชนาวีร์ กลิ่นมาลี",
+    "isAdmin": false,
+    "hasVoted": false
+  },
+  {
+    "code": "10669",
+    "name": "พ.อ.ชวลิต ประดิษฐ์นวกุล",
+    "isAdmin": false,
+    "hasVoted": false
+  },
+  {
+    "code": "10694",
+    "name": "นาย ดุรงค์ฤทธิ์ ศิริวัฒนพันธ์",
+    "isAdmin": false,
+    "hasVoted": false
+  },
+  {
+    "code": "10701",
+    "name": "พล.ต.เทวินทร์ เทศนธรรม",
+    "isAdmin": false,
+    "hasVoted": false
+  },
+  {
+    "code": "10708",
+    "name": "ผศ.พิเศษ นพ.ธนินทร์ เวชชาภินันท์",
+    "isAdmin": false,
+    "hasVoted": false
+  },
+  {
+    "code": "10728",
+    "name": "นาย นิทัศน์ วรพนพิพัฒน์",
+    "isAdmin": false,
+    "hasVoted": false
+  },
+  {
+    "code": "10731",
+    "name": "นาง เนตรนภา วรรณชัย",
+    "isAdmin": false,
+    "hasVoted": false
+  },
+  {
+    "code": "10734",
+    "name": "พล.ท.บรมวิช หิรัณยัษฐิติ",
+    "isAdmin": false,
+    "hasVoted": false
+  },
+  {
+    "code": "10747",
+    "name": "นาย ประเสริฐ ศิรินภาพร",
+    "isAdmin": false,
+    "hasVoted": false
+  },
+  {
+    "code": "10759",
+    "name": "น.ส.ปุณยนุช มีมั่งคั่ง",
+    "isAdmin": false,
+    "hasVoted": false
+  },
+  {
+    "code": "10768",
+    "name": "รศ.ดร.พัทธนันท์ หรรษาภิรมย์โชค",
+    "isAdmin": false,
+    "hasVoted": false
+  },
+  {
+    "code": "10770",
+    "name": "นาย พิฆเนศ ต๊ะปวง",
+    "isAdmin": false,
+    "hasVoted": false
+  },
+  {
+    "code": "10773",
+    "name": "พล.ต.พิทยากูล โพธิสุวรรณ",
+    "isAdmin": false,
+    "hasVoted": false
+  },
+  {
+    "code": "10775",
+    "name": "นาย พิภพ โชควัฒนา",
+    "isAdmin": false,
+    "hasVoted": false
+  },
+  {
+    "code": "10794",
+    "name": "พ.ต.ต.ยุทธนา แพรดํา",
+    "isAdmin": false,
+    "hasVoted": false
+  },
+  {
+    "code": "10812",
+    "name": "ดร.วรวุฒิ คงศิลป์",
+    "isAdmin": false,
+    "hasVoted": false
+  },
+  {
+    "code": "10815",
+    "name": "นาง วลัยพร ศี่ประยูรสกุล",
+    "isAdmin": false,
+    "hasVoted": false
+  },
+  {
+    "code": "10838",
+    "name": "น.อ.วุฒิกร สุวารี",
+    "isAdmin": false,
+    "hasVoted": false
+  },
+  {
+    "code": "10841",
+    "name": "น.ส.ศรมน อิงคตานุวัฒน์",
+    "isAdmin": false,
+    "hasVoted": false
+  },
+  {
+    "code": "10850",
+    "name": "พล.ต.เศรษฐศักดิ์ ดีสุข",
+    "isAdmin": false,
+    "hasVoted": false
+  },
+  {
+    "code": "10857",
+    "name": "พล.ต.สมพงษ์ สุขประดิษฐ",
+    "isAdmin": false,
+    "hasVoted": false
+  },
+  {
+    "code": "10880",
+    "name": "นาย สุรพงษ์ เอิมอุทัย",
+    "isAdmin": false,
+    "hasVoted": false
+  },
+  {
+    "code": "10882",
+    "name": "พล.ต.สุรยา แม้นเหมือน",
+    "isAdmin": false,
+    "hasVoted": false
+  },
+  {
+    "code": "10888",
+    "name": "นาย อดิศร พิพัฒน์วรพงศ์",
+    "isAdmin": false,
+    "hasVoted": false
+  },
+  {
+    "code": "10908",
+    "name": "นาย อารีศักดิ์ เสถียรภาพอยุทธ์",
+    "isAdmin": false,
+    "hasVoted": false
+  },
+  {
+    "code": "10909",
+    "name": "นาย อุกฤษฏ์ วงษ์ทองสาลี",
+    "isAdmin": false,
+    "hasVoted": false
+  },
+  {
+    "code": "10919",
+    "name": "SLTC NG Kiang Chuan",
+    "isAdmin": false,
+    "hasVoted": false
+  }
+]

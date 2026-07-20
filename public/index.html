@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบโหวตคะแนน - Commander's & NDC Awards</title>
+
+  <!-- Google Fonts: Prompt & Kanit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Kanit:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Firebase SDKs (Compat Version) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+  <div class="app-background"></div>
+
+  <!-- Header / Navigation Bar -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="logo-box">
+        <img id="mainLogo" src="head.jpg" alt="Voting System Header" onerror="this.onerror=null; this.src='logo.png';">
+      </div>
+      <div id="userHeaderBadge" class="user-header-badge hidden">
+        <span class="user-name-text" id="headerUserName"></span>
+        <button id="btnLogout" class="btn-logout" title="ออกจากระบบ"><i class="fa-solid fa-right-from-bracket"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Notification Banner -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- MAIN CONTAINER -->
+  <main class="main-container">
+
+    <!-- 1. LOGIN SCREEN -->
+    <section id="loginScreen" class="view-section active">
+      <div class="glass-card login-card animate-fade-in">
+        <div class="login-header">
+          <div class="icon-circle">
+            <i class="fa-solid fa-check-to-slot"></i>
+          </div>
+          <h2>เข้าสู่ระบบโหวตคะแนน</h2>
+          <p class="subtitle">กรุณากรอกรหัสประจำตัว 5 หลักที่คุณได้รับจาก Admin</p>
+        </div>
+
+        <form id="loginForm" onsubmit="return false;">
+          <div class="form-group">
+            <label for="inputCode"><i class="fa-solid fa-key"></i> รหัสประจำตัว (5 หลัก)</label>
+            <input type="text" id="inputCode" maxlength="5" placeholder="กรอกรหัส 5 หลัก เช่น 10001" autocomplete="off" required autofocus>
+          </div>
+          <button type="submit" id="btnLogin" class="btn-primary btn-block">
+            <span>เข้าสู่ระบบ</span> <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </form>
+
+        <div class="login-footer">
+          <p><i class="fa-solid fa-shield-halved"></i> ระบบรักษาความลับการโหวตเป็นเอกชัน</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. USER VOTING FORM SCREEN -->
+    <section id="votingScreen" class="view-section hidden">
+      <div class="welcome-banner glass-card animate-fade-in">
+        <div class="welcome-text">
+          <span class="badge-welcome">ยินดีต้อนรับ</span>
+          <h1 id="userWelcomeTitle">ยินดีต้อนรับคุณ...</h1>
+          <p>กรุณาเลือกผู้ลงสมัครที่ท่านชื่นชอบในแต่ละหัวข้อ แล้วกด "บันทึกการโหวต" ที่ด้านล่าง</p>
+        </div>
+        <div class="welcome-icon">
+          <i class="fa-solid fa-trophy"></i>
+        </div>
+      </div>
+
+      <form id="votingForm">
+        <!-- Category Groups will be rendered dynamically -->
+        <div id="votingCategoriesList" class="categories-list"></div>
+
+        <!-- Sticky Submit Bar -->
+        <div class="submit-bar glass-card">
+          <div class="submit-info">
+            <span id="voteProgressText">เลือกครบ 0 จาก 15 หัวข้อ</span>
+            <div class="progress-bar-bg">
+              <div id="voteProgressBar" class="progress-bar-fill" style="width: 0%"></div>
+            </div>
+          </div>
+          <button type="button" id="btnSubmitVote" class="btn-success btn-lg">
+            <i class="fa-solid fa-paper-plane"></i> บันทึกการโหวต
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- 3. USER TOP 3 LEADERBOARD (POST-VOTE VIEW) -->
+    <section id="leaderboardScreen" class="view-section hidden">
+      <div class="status-banner glass-card animate-fade-in">
+        <div class="status-icon success">
+          <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <div class="status-text">
+          <h2>ท่านได้ทำการโหวตเรียบร้อยแล้ว</h2>
+          <p>ขอบคุณที่ร่วมเป็นส่วนหนึ่งของการลงคะแนน นี่คือ **ผลคะแนน 3 อันดับแรก** ของแต่ละหัวข้อ</p>
+        </div>
+      </div>
+
+      <div class="leaderboard-grid" id="top3Container"></div>
+    </section>
+
+    <!-- 4. ADMIN DASHBOARD SCREEN -->
+    <section id="adminScreen" class="view-section hidden">
+      <div class="admin-header-card glass-card animate-fade-in">
+        <div class="admin-title-box">
+          <span class="badge-admin"><i class="fa-solid fa-user-shield"></i> ผู้ดูแลระบบ</span>
+          <h2>Admin Control Center</h2>
+          <p>สร้างรหัส User, จัดการผู้สมัคร, ดูผลโหวตสด และดูรายชื่อผู้ที่ยังไม่โหวต</p>
+        </div>
+        <div class="admin-quick-actions" style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button id="btnAdminLogout" class="btn-primary"><i class="fa-solid fa-right-from-bracket"></i> กลับหน้า Login ให้ User โหวต</button>
+          <button id="btnAdminResetModal" class="btn-danger-light"><i class="fa-solid fa-rotate-left"></i> Reset การโหวต</button>
+        </div>
+      </div>
+
+      <!-- Admin Navigation Tabs -->
+      <div class="admin-tabs-nav glass-card">
+        <button class="admin-tab active" data-tab="tabUsers"><i class="fa-solid fa-users-gear"></i> สร้าง & จัดการรหัส User</button>
+        <button class="admin-tab" data-tab="tabResults"><i class="fa-solid fa-chart-pie"></i> ผลคะแนนโหวตสด</button>
+        <button class="admin-tab" data-tab="tabUnvoted"><i class="fa-solid fa-user-clock"></i> ติดตามผู้ยังไม่โหวต (<span id="unvotedBadgeCount">0</span>)</button>
+        <button class="admin-tab" data-tab="tabCandidates"><i class="fa-solid fa-clipboard-user"></i> จัดการผู้สมัคร (Candidates)</button>
+      </div>
+
+      <!-- TAB 1: User Management -->
+      <div id="tabUsers" class="admin-tab-content active glass-card">
+        <div class="tab-header">
+          <h3><i class="fa-solid fa-id-card"></i> สร้างและจัดการรหัสผ่าน 5 หลักของ User</h3>
+        </div>
+
+        <!-- Add User Form -->
+        <div class="admin-form-row card-inset">
+          <div class="form-group flex-1">
+            <label for="newCode"><i class="fa-solid fa-hashtag"></i> รหัสประจำตัว (5 หลัก) *</label>
+            <input type="text" id="newCode" maxlength="5" placeholder="เช่น 10006">
+          </div>
+          <div class="form-group flex-2">
+            <label for="newName"><i class="fa-solid fa-user"></i> ชื่อ - นามสกุล *</label>
+            <input type="text" id="newName" placeholder="เช่น นายประเสริฐ สุขใจ">
+          </div>
+          <div class="form-group flex-0 align-self-end">
+            <button id="btnAddUser" class="btn-success"><i class="fa-solid fa-user-plus"></i> บันทึก</button>
+          </div>
+        </div>
+
+        <div class="table-responsive margin-top-20">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>รหัสประจำตัว</th>
+                <th>ชื่อ-นามสกุล</th>
+                <th>สถานะการโหวต</th>
+                <th>การจัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 2: Live Results -->
+      <div id="tabResults" class="admin-tab-content hidden glass-card">
+        <div class="tab-header">
+          <h3><i class="fa-solid fa-ranking-star"></i> ผลคะแนนโหวตรวมทั้งหมด (สำหรับ Admin)</h3>
+          <button id="btnRefreshResults" class="btn-secondary btn-sm"><i class="fa-solid fa-arrows-rotate"></i> อัปเดตข้อมูล</button>
+        </div>
+        <div id="adminResultsContainer" class="admin-results-grid"></div>
+      </div>
+
+      <!-- TAB 3: Unvoted Users -->
+      <div id="tabUnvoted" class="admin-tab-content hidden glass-card">
+        <div class="tab-header">
+          <h3><i class="fa-solid fa-user-xmark"></i> รายชื่อผู้ที่ยังไม่ได้ลงคะแนนโหวต</h3>
+          <span class="stat-summary" id="unvotedSummaryText">โหวตแล้ว 0 / 0 คน</span>
+        </div>
+        <div class="table-responsive">
+          <table class="custom-table" id="unvotedTable">
+            <thead>
+              <tr>
+                <th>ลำดับ</th>
+                <th>รหัสประจำตัว</th>
+                <th>ชื่อ-นามสกุล</th>
+                <th>สถานะการโหวต</th>
+              </tr>
+            </thead>
+            <tbody id="unvotedTableBody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 4: Candidate Management -->
+      <div id="tabCandidates" class="admin-tab-content hidden glass-card">
+        <div class="tab-header">
+          <h3><i class="fa-solid fa-sliders"></i> เพิ่ม / แก้ไข / ลบ รายชื่อผู้ลงสมัครโหวต</h3>
+        </div>
+
+        <div class="candidate-admin-layout">
+          <div class="category-selector-box">
+            <label for="adminCategorySelect"><i class="fa-solid fa-list"></i> เลือกหมวดหมู่รางวัลที่ต้องการจัดการ:</label>
+            <select id="adminCategorySelect" class="custom-select">
+              <!-- Populated via JS -->
+            </select>
+          </div>
+
+          <!-- Add Candidate Form -->
+          <div class="admin-form-row card-inset">
+            <div class="form-group flex-1">
+              <label>หมายเลขผู้สมัคร</label>
+              <input type="number" id="candNumber" placeholder="เช่น 1">
+            </div>
+            <div class="form-group flex-2">
+              <label>ชื่อผู้ลงสมัคร *</label>
+              <input type="text" id="candName" placeholder="เช่น นายปรีชา วงศ์สวัสดิ์">
+            </div>
+            <div class="form-group flex-2">
+              <label>รายละเอียดเพิ่มเติม (ถ้ามี)</label>
+              <input type="text" id="candDesc" placeholder="คำอธิบายสั้นๆ">
+            </div>
+            <div class="form-group flex-0 align-self-end">
+              <button id="btnAddCandidate" class="btn-success"><i class="fa-solid fa-plus"></i> เพิ่มผู้สมัคร</button>
+            </div>
+          </div>
+
+          <div class="table-responsive margin-top-20">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>หมายเลข</th>
+                  <th>ชื่อผู้ลงสมัคร</th>
+                  <th>รายละเอียด</th>
+                  <th>การจัดการ</th>
+                </tr>
+              </thead>
+              <tbody id="candidateAdminTableBody">
+                <!-- Rendered via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- RESET VOTES CONFIRMATION MODAL -->
+  <div id="resetModal" class="modal-backdrop hidden">
+    <div class="modal-card glass-card animate-pop">
+      <div class="modal-header text-danger">
+        <i class="fa-solid fa-triangle-exclamation modal-icon"></i>
+        <h3>ยืนยันการ Reset ผลคะแนนทั้งหมด</h3>
+      </div>
+      <div class="modal-body">
+        <p>การดำเนินการนี้จะ **ลบผลการโหวตทั้งหมด** ในระบบ และคืนสิทธิ์ให้ User ทุกคนกลับมาโหวตได้อีกครั้ง</p>
+        <p class="margin-top-10">เพื่อยืนยัน กรุณากรอกรหัสความปลอดภัย: <strong class="text-danger">000001</strong></p>
+        <div class="form-group margin-top-15">
+          <input type="text" id="resetConfirmCode" maxlength="6" placeholder="กรอก 000001 เพื่อยืนยัน" class="input-danger">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btnCancelReset" class="btn-secondary">ยกเลิก</button>
+        <button id="btnConfirmReset" class="btn-danger">ยืนยัน Reset ข้อมูลคะแนน</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT USER MODAL -->
+  <div id="editUserModal" class="modal-backdrop hidden">
+    <div class="modal-card glass-card animate-pop">
+      <div class="modal-header">
+        <i class="fa-solid fa-user-pen modal-icon" style="color:var(--primary-purple);"></i>
+        <h3>แก้ไขข้อมูลสมาชิก</h3>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editOriginalCode">
+        <div class="form-group">
+          <label for="editUserCode"><i class="fa-solid fa-hashtag"></i> รหัสประจำตัว (5 หลัก)</label>
+          <input type="text" id="editUserCode" maxlength="5" placeholder="รหัส 5 หลัก">
+        </div>
+        <div class="form-group margin-top-15">
+          <label for="editUserName"><i class="fa-solid fa-user"></i> ชื่อ - นามสกุล</label>
+          <input type="text" id="editUserName" placeholder="ชื่อ-นามสกุล สมาชิก">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btnCancelEditUser" class="btn-secondary">ยกเลิก</button>
+        <button id="btnSaveEditUser" class="btn-primary"><i class="fa-solid fa-floppy-disk"></i> บันทึกการแก้ไข</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <p>© 2026 Voting System - Commander's & NDC Awards</p>
+    <p class="footer-subtext">พัฒนาโดย: <a href="https://www.facebook.com/dusit.buranasiriprawat" target="_blank" rel="noopener noreferrer" class="developer-link">พ.อ.ต.ดุสิต บูรณะศิริประวัต</a> สมน.ผกร.บก.อย. (GenAI)</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "name": "web-vote-system",
+  "version": "1.0.0",
+  "description": "University Star-Moon & NDC Award Voting System",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
