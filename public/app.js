@@ -254,8 +254,34 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // --- REALTIME POLLING SYSTEM (3 SECONDS REFRESH) ---
+  let realtimeTimer = null;
+
+  function startRealtimePolling() {
+    stopRealtimePolling();
+    realtimeTimer = setInterval(() => {
+      if (currentUser && currentUser.isAdmin) {
+        const activeTab = document.querySelector('.admin-tab.active');
+        const targetId = activeTab ? activeTab.getAttribute('data-tab') : '';
+        if (targetId === 'tabResults') loadAdminResults();
+        if (targetId === 'tabUnvoted') loadUnvotedUsers();
+        if (targetId === 'tabUsers') loadAdminUserList();
+      } else if (currentUser && currentUser.hasVoted) {
+        loadUserLeaderboard();
+      }
+    }, 3000);
+  }
+
+  function stopRealtimePolling() {
+    if (realtimeTimer) {
+      clearInterval(realtimeTimer);
+      realtimeTimer = null;
+    }
+  }
+
   function navigateUserScreen() {
     if (!currentUser) {
+      stopRealtimePolling();
       showView('login');
       return;
     }
@@ -263,10 +289,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (currentUser.isAdmin) {
       showView('admin');
       loadAdminDashboardData();
+      startRealtimePolling();
     } else if (currentUser.hasVoted) {
       showView('leaderboard');
       loadUserLeaderboard();
+      startRealtimePolling();
     } else {
+      stopRealtimePolling();
       showView('voting');
       loadVotingForm();
     }
@@ -828,6 +857,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
+      localStorage.removeItem('vote_records');
+      localStorage.removeItem('vote_users');
+
       showToast(`คืนสิทธิ์การโหวตให้คุณ ${name} เรียบร้อยแล้ว!`, 'success');
       loadAdminUserList();
       loadUnvotedUsers();
@@ -980,7 +1012,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
+      localStorage.removeItem('vote_records');
+      localStorage.removeItem('vote_users');
+
       resetModal.classList.add('hidden');
+      resetConfirmCode.value = '';
       showToast('ทำการ Reset ข้อมูลการโหวตทั้งหมดสำเร็จ!', 'success');
       loadAdminDashboardData();
 
