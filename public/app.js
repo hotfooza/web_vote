@@ -254,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // --- REALTIME POLLING SYSTEM (30 SECONDS REFRESH) ---
+  // --- REALTIME POLLING SYSTEM (5 MINUTES REFRESH) ---
   let realtimeTimer = null;
 
   function startRealtimePolling() {
@@ -269,7 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } else if (currentUser && currentUser.hasVoted) {
         loadUserLeaderboard();
       }
-    }, 30000);
+    }, 300000);
   }
 
   function stopRealtimePolling() {
