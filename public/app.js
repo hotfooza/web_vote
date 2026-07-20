@@ -2,9 +2,9 @@
    VOTING SYSTEM - FIREBASE & LOCAL HYBRID FRONTEND LOGIC
    ========================================================= */
 
-const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.includes('vercel.app'))
   ? ''
-  : 'https://web-vote.onrender.com';
+  : 'https://web-vote-nine.vercel.app';
 
 // User's Firebase Configuration
 const firebaseConfig = {
