@@ -254,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // --- REALTIME POLLING SYSTEM (ADMIN: 5 MINS, USER LEADERBOARD: 30 SECS) ---
+  // --- REALTIME POLLING SYSTEM (ADMIN & USER LEADERBOARD: 5 MINS) ---
   let adminTimer = null;
   let userLeaderboardTimer = null;
 
@@ -271,10 +271,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (targetId === 'tabUsers') loadAdminUserList();
       }, 300000);
     } else if (currentUser && currentUser.hasVoted) {
-      // User / Server side leaderboard updates every 30 seconds (30,000 ms)
+      // User / Server side leaderboard updates every 5 minutes (300,000 ms)
       userLeaderboardTimer = setInterval(() => {
         loadUserLeaderboard();
-      }, 30000);
+      }, 300000);
     }
   }
 

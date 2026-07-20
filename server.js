@@ -499,6 +499,16 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+const https = require('https');
+const http = require('http');
+
+// Server Keep-Alive Self-Ping (Ping server every 30 seconds to keep Render awake 24/7)
+setInterval(() => {
+  const targetUrl = process.env.RENDER_EXTERNAL_URL || 'https://web-vote.onrender.com/api/candidates';
+  const client = targetUrl.startsWith('https') ? https : http;
+  client.get(targetUrl, () => {}).on('error', () => {});
+}, 30000);
+
 app.listen(PORT, () => {
   console.log(`===================================================`);
   console.log(`  Voting System Server running on port ${PORT}`);
