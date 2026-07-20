@@ -2,9 +2,9 @@
    VOTING SYSTEM - FIREBASE & LOCAL HYBRID FRONTEND LOGIC
    ========================================================= */
 
-const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.includes('vercel.app'))
+const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
   ? ''
-  : 'https://web-vote-nine.vercel.app';
+  : 'https://web-vote.onrender.com';
 
 // User's Firebase Configuration
 const firebaseConfig = {
@@ -254,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // --- REALTIME POLLING SYSTEM (5 MINUTES REFRESH) ---
+  // --- REALTIME POLLING SYSTEM (30 SECONDS REFRESH) ---
   let realtimeTimer = null;
 
   function startRealtimePolling() {
@@ -269,7 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } else if (currentUser && currentUser.hasVoted) {
         loadUserLeaderboard();
       }
-    }, 300000);
+    }, 30000);
   }
 
   function stopRealtimePolling() {
